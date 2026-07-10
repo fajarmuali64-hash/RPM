@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Data Rencana Pembelajaran</title>
+    <title>Generator RPM</title>
     <style>
         :root {
             --primary-color: #3b7145;
@@ -28,6 +28,35 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .main-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 3px double var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .main-header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .developer-badge {
+            position: absolute;
+            top: 15px;
+            right: 30px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #8c7e6b;
+            background: #faf8f5;
+            padding: 4px 10px;
+            border: 1px dashed var(--border-color);
+            border-radius: 4px;
         }
 
         .header-title {
@@ -35,6 +64,7 @@
             font-size: 12px;
             letter-spacing: 1px;
             color: #8c7e6b;
+            margin-top: 15px;
             margin-bottom: 5px;
         }
 
@@ -93,13 +123,6 @@
             height: 80px;
         }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background-color: #fff;
-        }
-
-        /* Dimensi Lulusan (Tags) */
         .dimensi-container {
             display: flex;
             flex-wrap: wrap;
@@ -143,7 +166,7 @@
             background-color: #2d5735;
         }
 
-        /* Output Hasil Rencana Pembelajaran */
+        /* Desain Bagian Output */
         #output-section {
             margin-top: 40px;
             display: none;
@@ -152,6 +175,29 @@
             border: 2px solid #333;
             color: #000;
         }
+
+        /* Grup Tombol Pilihan Pilihan Output */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .btn-pdf { background-color: #e53e3e; }
+        .btn-pdf:hover { background-color: #c53030; }
+        .btn-word { background-color: #2b6cb0; }
+        .btn-word:hover { background-color: #2b6cb0; }
 
         .output-table {
             width: 100%;
@@ -171,20 +217,9 @@
             margin-bottom: 20px;
         }
 
-        .btn-print {
-            background-color: #4a5568;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
         @media print {
             .container { box-shadow: none; border: none; padding: 0; }
-            form, .header-title, h2, .btn-print { display: none !none; }
+            form, .header-title, h2, .button-group, .main-header, .developer-badge { display: none !important; }
             #output-section { display: block !important; border: none; padding: 0; }
         }
     </style>
@@ -192,6 +227,12 @@
 <body>
 
 <div class="container">
+    <div class="developer-badge">Pengembang: Fajar Muali, S.Pd.</div>
+
+    <div class="main-header">
+        <h1>Generator RPM</h1>
+    </div>
+
     <div class="header-title">Formulir Isian</div>
     <h2>Data Rencana Pembelajaran</h2>
 
@@ -266,11 +307,11 @@
         </div>
         <div class="form-group">
             <label>Tujuan Pembelajaran</label>
-            <textarea id="tp" placeholder="Tuliskan tujuan pembelajaran (boleh berupa poin-poin)" required></textarea>
+            <textarea id="tp" placeholder="Tuliskan tujuan pembelajaran" required></textarea>
         </div>
         <div class="form-group">
             <label>Materi Pelajaran</label>
-            <textarea id="materi" placeholder="contoh: Suhu dan Kalor dalam konteks pembuatan gerabah Kasongan" required></textarea>
+            <textarea id="materi" placeholder="Materi Pelajaran" required></textarea>
         </div>
 
         <h3>D. Struktur Pertemuan</h3>
@@ -310,62 +351,65 @@
     </form>
 
     <div id="output-section">
-        <button class="btn-print" onclick="window.print()">Cetak Dokumen (PDF)</button>
-        <div class="preview-header">
-            <h2 style="color:#000; margin:0; padding:0; border:none; text-transform:uppercase;">Rencana Pelaksanaan Pembelajaran (RPP)</h2>
-            <div id="outSatuan" style="font-weight:bold; font-size:18px;"></div>
+        <div class="button-group">
+            <button class="btn-action btn-pdf" onclick="window.print()">Simpan ke PDF / Cetak</button>
+            <button class="btn-action btn-word" onclick="exportToWord()">Unduh File Word (.doc)</button>
         </div>
+        
+        <div id="document-content">
+            <div class="preview-header">
+                <h2 style="color:#000; margin:0; padding:0; border:none; text-transform:uppercase;">Rencana Pelaksanaan Pembelajaran (RPP)</h2>
+                <div id="outSatuan" style="font-weight:bold; font-size:18px;"></div>
+            </div>
 
-        <h4 style="margin-bottom:5px;">I. IDENTITAS DOKUMEN</h4>
-        <table class="output-table">
-            <tr><td width="30%">Mata Pelajaran</td><td width="5%">:</td><td id="outMapel"></td></tr>
-            <tr><td>Kelas / Semester</td><td>:</td><td id="outKelasSmt"></td></tr>
-            <tr><td>Tahun Ajaran</td><td>:</td><td id="outTA"></td></tr>
-            <tr><td>Alokasi Waktu</td><td>:</td><td id="outWaktu"></td></tr>
-        </table>
+            <h4 style="margin-bottom:5px;">I. IDENTITAS DOKUMEN</h4>
+            <table class="output-table">
+                <tr><td width="30%">Mata Pelajaran</td><td width="5%">:</td><td id="outMapel"></td></tr>
+                <tr><td>Kelas / Semester</td><td>:</td><td id="outKelasSmt"></td></tr>
+                <tr><td>Tahun Ajaran</td><td>:</td><td id="outTA"></td></tr>
+                <tr><td>Alokasi Waktu</td><td>:</td><td id="outWaktu"></td></tr>
+            </table>
 
-        <h4>II. CAPAIAN DAN TUJUAN PEMBELAJARAN</h4>
-        <p><strong>Capaian Pembelajaran:</strong></p>
-        <p id="outCP" style="white-space: pre-line; padding-left:15px;"></p>
-        <p><strong>Tujuan Pembelajaran:</strong></p>
-        <p id="outTP" style="white-space: pre-line; padding-left:15px;"></p>
+            <h4>II. CAPAIAN DAN TUJUAN PEMBELAJARAN</h4>
+            <p><strong>Capaian Pembelajaran:</strong></p>
+            <p id="outCP" style="white-space: pre-line; padding-left:15px;"></p>
+            <p><strong>Tujuan Pembelajaran:</strong></p>
+            <p id="outTP" style="white-space: pre-line; padding-left:15px;"></p>
 
-        <h4>III. MATERI DAN METODE</h4>
-        <table class="output-table">
-            <tr><td width="30%">Materi Pokok</td><td width="5%">:</td><td id="outMateri"></td></tr>
-            <tr><td>Model Pembelajaran</td><td>:</td><td id="outModel"></td></tr>
-            <tr><td>Dimensi Lulusan/Profil</td><td>:</td><td id="outDimensi"></td></tr>
-        </table>
+            <h4>III. MATERI DAN METODE</h4>
+            <table class="output-table">
+                <tr><td width="30%">Materi Pokok</td><td width="5%">:</td><td id="outMateri"></td></tr>
+                <tr><td>Model Pembelajaran</td><td>:</td><td id="outModel"></td></tr>
+                <tr><td>Dimensi Lulusan/Profil</td><td>:</td><td id="outDimensi"></td></tr>
+            </table>
 
-        <br><br>
-        <table width="100%" style="text-align: center;">
-            <tr>
-                <td width="50%">
-                    Mengetahui,<br>Kepala Sekolah<br><br><br><br>
-                    <span id="outKepsek" style="text-decoration: underline; font-weight: bold;"></span><br>
-                    NIP. <span id="outNipKepsek"></span>
-                </td>
-                <td width="50%">
-                    Jakarta, ........................ 2026<br>Guru Mata Pelajaran<br><br><br><br>
-                    <span id="outGuru" style="text-decoration: underline; font-weight: bold;"></span><br>
-                    NIP. <span id="outNipGuru"></span>
-                </td>
-            </tr>
-        </table>
+            <br><br>
+            <table width="100%" style="text-align: center;">
+                <tr>
+                    <td width="50%">
+                        Mengetahui,<br>Kepala Sekolah<br><br><br><br>
+                        <span id="outKepsek" style="text-decoration: underline; font-weight: bold;"></span><br>
+                        NIP. <span id="outNipKepsek"></span>
+                    </td>
+                    <td width="50%">
+                        ..............., ........................ 2026<br>Guru Mata Pelajaran<br><br><br><br>
+                        <span id="outGuru" style="text-decoration: underline; font-weight: bold;"></span><br>
+                        NIP. <span id="outNipGuru"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    // Fungsi untuk handle pilihan Dimensi Lulusan (multi-select)
     function toggleDimensi(element) {
         element.classList.toggle('selected');
     }
 
-    // Proses Form Saat Klik Tombol "Buat Rencana Pembelajaran"
     document.getElementById('rpmForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. Ambil Data Input
         const satuan = document.getElementById('satuanPendidikan').value;
         const mapel = document.getElementById('mataPelajaran').value;
         const jenjang = document.getElementById('jenjang').value;
@@ -383,13 +427,11 @@
         const durasi = document.getElementById('durasi').value;
         const model = document.getElementById('modelPembelajaran').value;
 
-        // Ambil Tag Dimensi Lulusan yang dipilih
         const selectedTags = [];
         document.querySelectorAll('.dimensi-tag.selected').forEach(tag => {
             selectedTags.push(tag.innerText);
         });
 
-        // 2. Petakan Ke Struktur Output Dokumen Rencana Pembelajaran
         document.getElementById('outSatuan').innerText = satuan;
         document.getElementById('outMapel').innerText = mapel;
         document.getElementById('outKelasSmt').innerText = jenjang + " Kelas " + kelas + " / " + smt;
@@ -406,11 +448,28 @@
         document.getElementById('outKepsek').innerText = kepsek;
         document.getElementById('outNipKepsek').innerText = nipKepsek;
 
-        // 3. Tampilkan Dokumen Hasil Ke Layar & Gulir Kebawah
         const outputSection = document.getElementById('output-section');
         outputSection.style.display = 'block';
         outputSection.scrollIntoView({ behavior: 'smooth' });
     });
+
+    // FUNGSI UTAMA UNTUK EKSPOR KE WORD (.DOC)
+    function exportToWord() {
+        var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Rencana Pelaksanaan Pembelajaran</title><style>body{font-family:Arial;}</style></head><body>";
+        var footer = "</body></html>";
+        var sourceHTML = header + document.getElementById("document-content").innerHTML + footer;
+        
+        var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+        var fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        fileDownload.href = source;
+        fileDownload.download = 'Rencana_Pembelajaran_RPM.doc';
+        fileDownload.click();
+        document.body.removeChild(fileDownload);
+    }
 </script>
 
 </body>
