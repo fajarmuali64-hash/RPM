@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator Data Rencana Pembelajaran</title>
+    <!-- Menggunakan Tailwind CSS versi 4 via script -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* Custom warna khusus agar mirip dengan tema gambar (Hijau - Emas) */
         :root {
             --primary-green: #3B7A57;
             --dark-green: #2D5A3F;
@@ -22,33 +22,32 @@
         .bg-green-main { background-color: var(--primary-green); }
         .bg-green-main:hover { background-color: var(--dark-green); }
         
-        /* Style untuk tombol pilhan dimensi yang bisa di-toggle */
         .dimensi-btn.active {
             background-color: var(--gold-accent);
             color: white;
             border-color: var(--gold-accent);
         }
 
-        /* Sembunyikan hasil cetak saat di layar biasa */
         #outputArea { display: none; }
 
-        /* Pengaturan cetak otomatis */
         @media print {
             body * { visibility: hidden; }
             #outputArea, #outputArea * { visibility: visible; }
-            #outputArea { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+            #outputArea { display: block; position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; padding: 0; }
             .no-print { display: none; }
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
+    <!-- FORM INPUT -->
     <div id="formContainer" class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md border border-amber-100 no-print">
         <p class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Formulir Isian</p>
         <h1 class="text-2xl font-serif font-bold text-gray-800 mb-6 border-b pb-4">Data Rencana Pembelajaran</h1>
 
         <form id="rmpForm" onsubmit="generateRMP(event)">
             
+            <!-- A. Identitas -->
             <h2 class="text-lg font-semibold text-emerald-800 mb-4">A. Identitas</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
@@ -86,6 +85,7 @@
                 </div>
             </div>
 
+            <!-- B. Identitas Penanggung Jawab -->
             <h2 class="text-lg font-semibold text-emerald-800 mb-4">B. Identitas Penanggung Jawab</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
@@ -101,4 +101,294 @@
                     <input type="text" id="namaKepsek" required class="w-full p-2 border border-gold rounded focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">NIP Kepala Sekolah <span class="text-red-5
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">NIP Kepala Sekolah <span class="text-red-500">*</span></label>
+                    <input type="text" id="nipKepsek" required class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+            </div>
+
+            <!-- C. Muatan Pembelajaran -->
+            <h2 class="text-lg font-semibold text-emerald-800 mb-4">C. Muatan Pembelajaran</h2>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Capaian Pembelajaran (CP) <span class="text-red-500">*</span></label>
+                    <textarea id="cp" required rows="3" placeholder="Tuliskan capaian pembelajaran sesuai fase/kelas" class="w-full p-2 border border-gold rounded focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Tujuan Pembelajaran <span class="text-red-500">*</span></label>
+                    <textarea id="tp" required rows="3" placeholder="Tuliskan tujuan pembelajaran (boleh berupa poin-poin)" class="w-full p-2 border border-gold rounded focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Materi Pelajaran <span class="text-red-500">*</span></label>
+                    <textarea id="materi" required rows="2" placeholder="contoh: Suhu dan Kalor dalam konteks pembuatan gerabah Kasongan" class="w-full p-2 border border-gold rounded focus:outline-none"></textarea>
+                </div>
+            </div>
+
+            <!-- D. Struktur Pertemuan -->
+            <h2 class="text-lg font-semibold text-emerald-800 mb-4">D. Struktur Pertemuan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Jumlah Pertemuan <span class="text-red-500">*</span></label>
+                    <input type="number" id="jumlahPertemuan" value="1" min="1" required class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Durasi Per Pertemuan <span class="text-red-500">*</span></label>
+                    <input type="text" id="durasi" required placeholder="contoh: 2 x 35 menit" class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+            </div>
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Model Pembelajaran (Pertemuan 1)</label>
+                <select id="modelBelajar" class="w-full p-2 border border-gold rounded bg-white focus:outline-none">
+                    <option value="Inkuiri-Discovery Learning">Inkuiri-Discovery Learning</option>
+                    <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+                    <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+                    <option value="Ceramah & Diskusi Kelompok">Ceramah & Diskusi Kelompok</option>
+                </select>
+            </div>
+
+            <!-- E. Dimensi Lulusan -->
+            <h2 class="text-lg font-semibold text-emerald-800 mb-3">E. Dimensi Lulusan</h2>
+            <div class="flex flex-wrap gap-2 mb-8" id="dimensiContainer">
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Keimanan & Ketakwaan</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Kewargaan</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Penalaran Kritis</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Kreativitas</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Kolaborasi</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Kemandirian</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Kesehatan</button>
+                <button type="button" onclick="toggleDimensi(this)" class="dimensi-btn px-3 py-1.5 text-xs font-medium border border-gold rounded-full text-gray-700 bg-white cursor-pointer transition">Komunikasi</button>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button type="submit" class="w-full bg-green-main text-white py-3 rounded font-bold tracking-wider uppercase shadow cursor-pointer transition">
+                Buat Rencana Pembelajaran
+            </button>
+        </form>
+    </div>
+
+    <!-- PRATINJAU HASIL GENERATOR -->
+    <div id="outputArea" class="max-w-4xl mx-auto bg-white p-8 my-4 shadow-lg border border-gray-300 rounded text-sm leading-relaxed">
+        <div class="text-center mb-6 border-b-2 border-black pb-4">
+            <h2 class="text-xl font-bold uppercase tracking-wide">RENCANA MUTU PEMBELAJARAN (RMP)</h2>
+            <h3 id="outSatuan" class="text-md font-semibold uppercase"></h3>
+        </div>
+
+        <!-- Tabel Identitas -->
+        <table class="w-full mb-6 border-collapse">
+            <tr>
+                <td class="w-1/4 font-semibold py-1">Mata Pelajaran</td>
+                <td class="w-4 py-1">:</td>
+                <td id="outMapel" class="py-1"></td>
+                <td class="w-1/4 font-semibold py-1">Nama Guru</td>
+                <td class="w-4 py-1">:</td>
+                <td id="outGuru" class="py-1"></td>
+            </tr>
+            <tr>
+                <td class="font-semibold py-1">Kelas / Semester</td>
+                <td>:</td>
+                <td id="outKelasSmt"></td>
+                <td class="font-semibold py-1">NIP Guru</td>
+                <td>:</td>
+                <td id="outNipGuru"></td>
+            </tr>
+            <tr>
+                <td class="font-semibold py-1">Tahun Ajaran</td>
+                <td>:</td>
+                <td id="outTA"></td>
+                <td class="font-semibold py-1">Model Pembelajaran</td>
+                <td>:</td>
+                <td id="outModel"></td>
+            </tr>
+            <tr>
+                <td class="font-semibold py-1">Alokasi Waktu</td>
+                <td>:</td>
+                <td id="outWaktu"></td>
+                <td class="font-semibold py-1">Dimensi Lulusan</td>
+                <td>:</td>
+                <td id="outDimensi" class="font-medium italic text-gray-700"></td>
+            </tr>
+        </table>
+
+        <!-- Konten Utama RMP -->
+        <div class="space-y-4">
+            <div>
+                <h4 class="font-bold border-b border-gray-300 pb-1 mb-1">I. CAPAIAN PEMBELAJARAN (CP)</h4>
+                <p id="outCP" class="whitespace-pre-line text-justify pl-4"></p>
+            </div>
+            <div>
+                <h4 class="font-bold border-b border-gray-300 pb-1 mb-1">II. TUJUAN PEMBELAJARAN (TP)</h4>
+                <p id="outTP" class="whitespace-pre-line text-justify pl-4"></p>
+            </div>
+            <div>
+                <h4 class="font-bold border-b border-gray-300 pb-1 mb-1">III. MATERI PEMBELAJARAN</h4>
+                <p id="outMateri" class="pl-4"></p>
+            </div>
+            <div>
+                <h4 class="font-bold border-b border-gray-300 pb-1 mb-1">IV. LANGKAH-LANGKAH PEMBELAJARAN</h4>
+                <div id="outLangkah" class="pl-4 space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- Tanda Tangan -->
+        <div class="mt-12 flex justify-between px-8 text-center">
+            <div>
+                <p>Mengetahui,</p>
+                <p class="mb-20">Kepala Sekolah</p>
+                <p id="outNamaKepsek" class="font-bold underline"></p>
+                <p id="outNipKepsek" class="text-xs text-gray-600"></p>
+            </div>
+            <div>
+                <p id="outTanggal">Jakarta, 11 Juli 2026</p>
+                <p class="mb-20">Guru Mata Pelajaran</p>
+                <p id="outNamaGuru2" class="font-bold underline"></p>
+                <p id="outNipGuru2" class="text-xs text-gray-600"></p>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cetak Ulang / Kembali -->
+        <div class="mt-8 pt-4 border-t text-center no-print flex justify-center gap-4">
+            <button onclick="downloadDoc()" class="bg-blue-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-blue-700 cursor-pointer">Download File (.doc)</button>
+            <button onclick="window.print()" class="bg-emerald-600 text-white px-4 py-2 rounded font-semibold shadow hover:bg-emerald-700 cursor-pointer">Cetak / PDF</button>
+            <button onclick="kembaliKeForm()" class="bg-gray-500 text-white px-4 py-2 rounded font-semibold shadow hover:bg-gray-600 cursor-pointer">Edit Data</button>
+        </div>
+    </div>
+
+    <!-- LOGIKA JAVASCRIPT -->
+    <script>
+        function toggleDimensi(button) {
+            button.classList.toggle('active');
+        }
+
+        function generateRMP(event) {
+            event.preventDefault();
+
+            const satuan = document.getElementById('satuanPendidikan').value;
+            const mapel = document.getElementById('mataPelajaran').value;
+            const kelas = document.getElementById('kelas').value;
+            const semester = document.getElementById('semester').value;
+            const ta = document.getElementById('tahunAjaran').value;
+            const guru = document.getElementById('namaGuru').value;
+            const nipGuru = document.getElementById('nipGuru').value;
+            const kepsek = document.getElementById('namaKepsek').value;
+            const nipKepsek = document.getElementById('nipKepsek').value;
+            const cp = document.getElementById('cp').value;
+            const tp = document.getElementById('tp').value;
+            const materi = document.getElementById('materi').value;
+            const jmlPertemuan = document.getElementById('jumlahPertemuan').value;
+            const durasi = document.getElementById('durasi').value;
+            const model = document.getElementById('modelBelajar').value;
+
+            const dimensiDipilih = [];
+            document.querySelectorAll('.dimensi-btn.active').forEach(btn => {
+                dimensiDipilih.push(btn.innerText);
+            });
+
+            document.getElementById('outSatuan').innerText = satuan;
+            document.getElementById('outMapel').innerText = mapel;
+            document.getElementById('outKelasSmt').innerText = kelas + " / " + semester;
+            document.getElementById('outTA').innerText = ta;
+            document.getElementById('outWaktu').innerText = jmlPertemuan + " Pertemuan (" + durasi + ")";
+            document.getElementById('outGuru').innerText = guru;
+            document.getElementById('outNipGuru').innerText = nipGuru ? nipGuru : '-';
+            document.getElementById('outModel').innerText = model;
+            document.getElementById('outDimensi').innerText = dimensiDipilih.length > 0 ? dimensiDipilih.join(', ') : '-';
+            
+            document.getElementById('outCP').innerText = cp;
+            document.getElementById('outTP').innerText = tp;
+            document.getElementById('outMateri').innerText = materi;
+
+            document.getElementById('outNamaKepsek').innerText = kepsek;
+            document.getElementById('outNipKepsek').innerText = nipKepsek ? "NIP. " + nipKepsek : "NIP. -";
+            document.getElementById('outNamaGuru2').innerText = guru;
+            document.getElementById('outNipGuru2').innerText = nipGuru ? "NIP. " + nipGuru : "NIP. -";
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('id-ID', options);
+            document.getElementById('outTanggal').innerText = "Jakarta, " + today;
+
+            const langkahContainer = document.getElementById('outLangkah');
+            langkahContainer.innerHTML = '';
+
+            let templateLangkah = '';
+            if(model.includes("Inkuiri-Discovery")) {
+                templateLangkah = `
+                    <p class="font-semibold">A. Kegiatan Pendahuluan (15 Menit)</p>
+                    <ul class="list-disc pl-5 mb-2">
+                        <li>Guru membuka pelajaran dengan salam, berdoa, dan memeriksa kehadiran siswa.</li>
+                        <li>Apersepsi: Guru mengaitkan materi lama dengan topik bahasan: <strong>${materi}</strong>.</li>
+                    </ul>
+                    <p class="font-semibold">B. Kegiatan Inti (Sesuai Sintaks Discovery Learning)</p>
+                    <ol class="list-decimal pl-5 mb-2">
+                        <li><strong>Stimulation:</strong> Siswa mengamati fenomena terkait materi.</li>
+                        <li><strong>Problem Statement:</strong> Siswa merumuskan pertanyaan/hipotesis.</li>
+                        <li><strong>Data Collection:</strong> Siswa mencari informasi atau melakukan eksperimen kecil.</li>
+                        <li><strong>Data Processing:</strong> Siswa berdiskusi kelompok mengolah data.</li>
+                        <li><strong>Verification:</strong> Perwakilan siswa mempresentasikan hasil diskusi.</li>
+                        <li><strong>Generalization:</strong> Guru dan siswa bersama-sama menyimpulkan inti pembelajaran.</li>
+                    </ol>
+                    <p class="font-semibold">C. Kegiatan Penutup (15 Menit)</p>
+                    <ul class="list-disc pl-5">
+                        <li>Guru memberikan evaluasi singkat dan refleksi proses belajar.</li>
+                        <li>Menyampaikan rencana materi berikutnya serta menutup dengan doa bersama.</li>
+                    </ul>`;
+            } else {
+                templateLangkah = `
+                    <p class="font-semibold">A. Kegiatan Pendahuluan</p>
+                    <ul class="list-disc pl-5 mb-2">
+                        <li>Salam pembuka, orientasi kelas, berdoa, dan pengondisian kehadiran siswa.</li>
+                        <li>Penyampaian target kompetensi berdasarkan capaian pembelajaran.</li>
+                    </ul>
+                    <p class="font-semibold">B. Kegiatan Inti</p>
+                    <ul class="list-disc pl-5 mb-2">
+                        <li>Siswa mempelajari materi utama secara berkelompok/mandiri.</li>
+                        <li>Siswa berdiskusi memecahkan studi kasus/masalah kontekstual yang disiapkan oleh guru.</li>
+                        <li>Presentasi hasil belajar dan penguatan konsep oleh Guru Pengampu.</li>
+                    </ul>
+                    <p class="font-semibold">C. Kegiatan Penutup</p>
+                    <ul class="list-disc pl-5">
+                        <li>Refleksi bersama atas kendala dan kesuksesan belajar hari ini.</li>
+                        <li>Penugasan mandiri terstruktur dan doa penutup kelas.</li>
+                    </ul>`;
+            }
+            langkahContainer.innerHTML = templateLangkah;
+
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('outputArea').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function kembaliKeForm() {
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('outputArea').style.display = 'none';
+        }
+
+        // FUNGSI UTAMA UNTUK DOWNLOAD MENJADI FILE WORD DOKUMEN (.doc)
+        function downloadDoc() {
+            // Ambil element container RMP (tanpa tombol aksi)
+            const content = document.getElementById('outputArea').cloneNode(true);
+            const actionButtons = content.querySelector('.no-print');
+            if(actionButtons) { content.removeChild(actionButtons); }
+            
+            const htmlSource = content.innerHTML;
+            
+            // Blob data berupa Microsoft Word document format HTML
+            const blob = new Blob(['\ufeff' + htmlSource], {
+                type: 'application/msword'
+            });
+            
+            // Buat tautan download sementara
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Nama file dinamis berdasarkan nama sekolah / mata pelajaran
+            const mapelName = document.getElementById('outMapel').innerText || 'RMP';
+            a.download = 'RMP_' + mapelName.replace(/\s+/g, '_') + '.doc';
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
