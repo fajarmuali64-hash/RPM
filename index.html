@@ -3,474 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator RPM</title>
+    <title>Generator Data Rencana Pembelajaran</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
+        /* Custom warna khusus agar mirip dengan tema gambar (Hijau - Emas) */
         :root {
-            --primary-color: #3b7145;
-            --bg-color: #fcf9f2;
-            --border-color: #d1c2a5;
-            --text-color: #4a4238;
+            --primary-green: #3B7A57;
+            --dark-green: #2D5A3F;
+            --gold-accent: #C5A059;
+            --bg-cream: #FFFDF9;
         }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            background-color: var(--bg-cream);
+            color: #333;
         }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            position: relative;
-        }
-
-        .main-header {
-            text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 3px double var(--primary-color);
-            padding-bottom: 10px;
-        }
-
-        .main-header h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .developer-badge {
-            position: absolute;
-            top: 15px;
-            right: 30px;
-            font-size: 11px;
-            font-weight: bold;
-            color: #8c7e6b;
-            background: #faf8f5;
-            padding: 4px 10px;
-            border: 1px dashed var(--border-color);
-            border-radius: 4px;
-        }
-
-        .header-title {
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 1px;
-            color: #8c7e6b;
-            margin-top: 15px;
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #e8e2d5;
-            padding-bottom: 10px;
-        }
-
-        h3 {
-            color: var(--primary-color);
-            font-size: 16px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            color: #7a6e5d;
-        }
-
-        label::after {
-            content: " *";
-            color: red;
-        }
-
-        input[type="text"], input[type="number"], select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            box-sizing: border-box;
-            background-color: #faf8f5;
-            color: var(--text-color);
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 80px;
-        }
-
-        .dimensi-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .dimensi-tag {
-            cursor: pointer;
-            padding: 6px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 12px;
-            background: #fff;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .dimensi-tag.selected {
-            background-color: #f0eae1;
-            border-color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background-color: var(--primary-color);
+        .border-gold { border-color: var(--gold-accent); }
+        .text-gold { color: var(--gold-accent); }
+        .bg-green-main { background-color: var(--primary-green); }
+        .bg-green-main:hover { background-color: var(--dark-green); }
+        
+        /* Style untuk tombol pilhan dimensi yang bisa di-toggle */
+        .dimensi-btn.active {
+            background-color: var(--gold-accent);
             color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 30px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border-color: var(--gold-accent);
         }
 
-        .btn-submit:hover {
-            background-color: #2d5735;
-        }
+        /* Sembunyikan hasil cetak saat di layar biasa */
+        #outputArea { display: none; }
 
-        /* Desain Bagian Output */
-        #output-section {
-            margin-top: 40px;
-            display: none;
-            background: white;
-            padding: 40px;
-            border: 2px solid #333;
-            color: #000;
-        }
-
-        /* Grup Tombol Pilihan Pilihan Output */
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn-action {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .btn-pdf { background-color: #e53e3e; }
-        .btn-pdf:hover { background-color: #c53030; }
-        .btn-word { background-color: #2b6cb0; }
-        .btn-word:hover { background-color: #2b6cb0; }
-
-        .output-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .output-table td {
-            padding: 5px;
-            vertical-align: top;
-        }
-
-        .preview-header {
-            text-align: center;
-            border-bottom: 3px double #000;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
+        /* Pengaturan cetak otomatis */
         @media print {
-            .container { box-shadow: none; border: none; padding: 0; }
-            form, .header-title, h2, .button-group, .main-header, .developer-badge { display: none !important; }
-            #output-section { display: block !important; border: none; padding: 0; }
+            body * { visibility: hidden; }
+            #outputArea, #outputArea * { visibility: visible; }
+            #outputArea { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
         }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-<div class="container">
-    <div class="developer-badge">Pengembang: Fajar Muali, S.Pd.</div>
+    <div id="formContainer" class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md border border-amber-100 no-print">
+        <p class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Formulir Isian</p>
+        <h1 class="text-2xl font-serif font-bold text-gray-800 mb-6 border-b pb-4">Data Rencana Pembelajaran</h1>
 
-    <div class="main-header">
-        <h1>Generator RPM</h1>
-    </div>
-
-    <div class="header-title">Formulir Isian</div>
-    <h2>Data Rencana Pembelajaran</h2>
-
-    <form id="rpmForm">
-        <h3>A. Identitas</h3>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Nama Satuan Pendidikan</label>
-                <input type="text" id="satuanPendidikan" placeholder="contoh: SMP Negeri 1 Yogyakarta" required>
-            </div>
-            <div class="form-group">
-                <label>Mata Pelajaran</label>
-                <input type="text" id="mataPelajaran" placeholder="contoh: Ilmu Pengetahuan Alam" required>
-            </div>
-        </div>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Jenjang Pendidikan</label>
-                <select id="jenjang" required>
-                    <option value="">Pilih Jenjang</option>
-                    <option value="SD">SD / MI</option>
-                    <option value="SMP">SMP / MTs</option>
-                    <option value="SMA">SMA / MA / SMK</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Kelas</label>
-                <input type="text" id="kelas" placeholder="contoh: VII atau X" required>
-            </div>
-        </div>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Semester</label>
-                <select id="semester" required>
-                    <option value="">Pilih semester</option>
-                    <option value="Ganjil">Ganjil</option>
-                    <option value="Genap">Genap</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tahun Ajaran</label>
-                <input type="text" id="tahunAjaran" placeholder="contoh: 2025/2026" required>
-            </div>
-        </div>
-
-        <h3>B. Identitas Penanggung Jawab</h3>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Nama Guru</label>
-                <input type="text" id="namaGuru" required>
-            </div>
-            <div class="form-group">
-                <label>NIP Guru</label>
-                <input type="text" id="nipGuru" required>
-            </div>
-        </div>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Nama Kepala Sekolah</label>
-                <input type="text" id="namaKepsek" required>
-            </div>
-            <div class="form-group">
-                <label>NIP Kepala Sekolah</label>
-                <input type="text" id="nipKepsek" required>
-            </div>
-        </div>
-
-        <h3>C. Muatan Pembelajaran</h3>
-        <div class="form-group">
-            <label>Capaian Pembelajaran (CP)</label>
-            <textarea id="cp" placeholder="Tuliskan capaian pembelajaran sesuai fase/kelas" required></textarea>
-        </div>
-        <div class="form-group">
-            <label>Tujuan Pembelajaran</label>
-            <textarea id="tp" placeholder="Tuliskan tujuan pembelajaran" required></textarea>
-        </div>
-        <div class="form-group">
-            <label>Materi Pelajaran</label>
-            <textarea id="materi" placeholder="Materi Pelajaran" required></textarea>
-        </div>
-
-        <h3>D. Struktur Pertemuan</h3>
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Jumlah Pertemuan</label>
-                <input type="number" id="jumlahPertemuan" value="1" min="1" required>
-            </div>
-            <div class="form-group">
-                <label>Durasi Per Pertemuan</label>
-                <input type="text" id="durasi" placeholder="contoh: 2 x 35 menit" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Model Pembelajaran (Pertemuan 1)</label>
-            <select id="modelPembelajaran" required>
-                <option value="Inkuiri-Discovery Learning">Inkuiri-Discovery Learning</option>
-                <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
-                <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
-                <option value="Contextual Teaching and Learning">Contextual Teaching and Learning</option>
-            </select>
-        </div>
-
-        <h3>E. Dimensi Lulusan</h3>
-        <div class="dimensi-container" id="dimensiContainer">
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Keimanan & Ketakwaan</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Kewargaan</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Penalaran Kritis</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Kreativitas</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Kolaborasi</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Kemandirian</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Kesehatan</div>
-            <div class="dimensi-tag" onclick="toggleDimensi(this)">Komunikasi</div>
-        </div>
-
-        <button type="submit" class="btn-submit">Buat Rencana Pembelajaran</button>
-    </form>
-
-    <div id="output-section">
-        <div class="button-group">
-            <button class="btn-action btn-pdf" onclick="window.print()">Simpan ke PDF / Cetak</button>
-            <button class="btn-action btn-word" onclick="exportToWord()">Unduh File Word (.doc)</button>
-        </div>
-        
-        <div id="document-content">
-            <div class="preview-header">
-                <h2 style="color:#000; margin:0; padding:0; border:none; text-transform:uppercase;">Rencana Pelaksanaan Pembelajaran (RPP)</h2>
-                <div id="outSatuan" style="font-weight:bold; font-size:18px;"></div>
+        <form id="rmpForm" onsubmit="generateRMP(event)">
+            
+            <h2 class="text-lg font-semibold text-emerald-800 mb-4">A. Identitas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Nama Satuan Pendidikan <span class="text-red-500">*</span></label>
+                    <input type="text" id="satuanPendidikan" required placeholder="contoh: SMP Negeri 1 Yogyakarta" class="w-full p-2 border border-gold rounded focus:outline-none focus:ring-1 focus:ring-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Mata Pelajaran <span class="text-red-500">*</span></label>
+                    <input type="text" id="mataPelajaran" required placeholder="contoh: Ilmu Pengetahuan Alam" class="w-full p-2 border border-gold rounded focus:outline-none focus:ring-1 focus:ring-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Jenjang Pendidikan <span class="text-red-500">*</span></label>
+                    <select id="jenjang" required class="w-full p-2 border border-gold rounded bg-white focus:outline-none">
+                        <option value="">Pilih Jenjang</option>
+                        <option value="SD">SD / MI</option>
+                        <option value="SMP">SMP / MTs</option>
+                        <option value="SMA">SMA / MA / SMK</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Kelas <span class="text-red-500">*</span></label>
+                    <input type="text" id="kelas" required placeholder="contoh: VII, VIII, IX" class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Semester <span class="text-red-500">*</span></label>
+                    <select id="semester" required class="w-full p-2 border border-gold rounded bg-white focus:outline-none">
+                        <option value="">Pilih semester</option>
+                        <option value="Ganjil">Ganjil</option>
+                        <option value="Genap">Genap</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Tahun Ajaran <span class="text-red-500">*</span></label>
+                    <input type="text" id="tahunAjaran" required placeholder="contoh: 2025/2026" class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
             </div>
 
-            <h4 style="margin-bottom:5px;">I. IDENTITAS DOKUMEN</h4>
-            <table class="output-table">
-                <tr><td width="30%">Mata Pelajaran</td><td width="5%">:</td><td id="outMapel"></td></tr>
-                <tr><td>Kelas / Semester</td><td>:</td><td id="outKelasSmt"></td></tr>
-                <tr><td>Tahun Ajaran</td><td>:</td><td id="outTA"></td></tr>
-                <tr><td>Alokasi Waktu</td><td>:</td><td id="outWaktu"></td></tr>
-            </table>
-
-            <h4>II. CAPAIAN DAN TUJUAN PEMBELAJARAN</h4>
-            <p><strong>Capaian Pembelajaran:</strong></p>
-            <p id="outCP" style="white-space: pre-line; padding-left:15px;"></p>
-            <p><strong>Tujuan Pembelajaran:</strong></p>
-            <p id="outTP" style="white-space: pre-line; padding-left:15px;"></p>
-
-            <h4>III. MATERI DAN METODE</h4>
-            <table class="output-table">
-                <tr><td width="30%">Materi Pokok</td><td width="5%">:</td><td id="outMateri"></td></tr>
-                <tr><td>Model Pembelajaran</td><td>:</td><td id="outModel"></td></tr>
-                <tr><td>Dimensi Lulusan/Profil</td><td>:</td><td id="outDimensi"></td></tr>
-            </table>
-
-            <br><br>
-            <table width="100%" style="text-align: center;">
-                <tr>
-                    <td width="50%">
-                        Mengetahui,<br>Kepala Sekolah<br><br><br><br>
-                        <span id="outKepsek" style="text-decoration: underline; font-weight: bold;"></span><br>
-                        NIP. <span id="outNipKepsek"></span>
-                    </td>
-                    <td width="50%">
-                        ..............., ........................ 2026<br>Guru Mata Pelajaran<br><br><br><br>
-                        <span id="outGuru" style="text-decoration: underline; font-weight: bold;"></span><br>
-                        NIP. <span id="outNipGuru"></span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<script>
-    function toggleDimensi(element) {
-        element.classList.toggle('selected');
-    }
-
-    document.getElementById('rpmForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const satuan = document.getElementById('satuanPendidikan').value;
-        const mapel = document.getElementById('mataPelajaran').value;
-        const jenjang = document.getElementById('jenjang').value;
-        const kelas = document.getElementById('kelas').value;
-        const smt = document.getElementById('semester').value;
-        const ta = document.getElementById('tahunAjaran').value;
-        const guru = document.getElementById('namaGuru').value;
-        const nipGuru = document.getElementById('nipGuru').value;
-        const kepsek = document.getElementById('namaKepsek').value;
-        const nipKepsek = document.getElementById('nipKepsek').value;
-        const cp = document.getElementById('cp').value;
-        const tp = document.getElementById('tp').value;
-        const materi = document.getElementById('materi').value;
-        const jmlPertemuan = document.getElementById('jumlahPertemuan').value;
-        const durasi = document.getElementById('durasi').value;
-        const model = document.getElementById('modelPembelajaran').value;
-
-        const selectedTags = [];
-        document.querySelectorAll('.dimensi-tag.selected').forEach(tag => {
-            selectedTags.push(tag.innerText);
-        });
-
-        document.getElementById('outSatuan').innerText = satuan;
-        document.getElementById('outMapel').innerText = mapel;
-        document.getElementById('outKelasSmt').innerText = jenjang + " Kelas " + kelas + " / " + smt;
-        document.getElementById('outTA').innerText = ta;
-        document.getElementById('outWaktu').innerText = jmlPertemuan + " Pertemuan (" + durasi + ")";
-        document.getElementById('outCP').innerText = cp;
-        document.getElementById('outTP').innerText = tp;
-        document.getElementById('outMateri').innerText = materi;
-        document.getElementById('outModel').innerText = model;
-        document.getElementById('outDimensi').innerText = selectedTags.length > 0 ? selectedTags.join(', ') : '-';
-        
-        document.getElementById('outGuru').innerText = guru;
-        document.getElementById('outNipGuru').innerText = nipGuru;
-        document.getElementById('outKepsek').innerText = kepsek;
-        document.getElementById('outNipKepsek').innerText = nipKepsek;
-
-        const outputSection = document.getElementById('output-section');
-        outputSection.style.display = 'block';
-        outputSection.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // FUNGSI UTAMA UNTUK EKSPOR KE WORD (.DOC)
-    function exportToWord() {
-        var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
-            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
-            "xmlns='http://www.w3.org/TR/REC-html40'>"+
-            "<head><meta charset='utf-8'><title>Rencana Pelaksanaan Pembelajaran</title><style>body{font-family:Arial;}</style></head><body>";
-        var footer = "</body></html>";
-        var sourceHTML = header + document.getElementById("document-content").innerHTML + footer;
-        
-        var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-        var fileDownload = document.createElement("a");
-        document.body.appendChild(fileDownload);
-        fileDownload.href = source;
-        fileDownload.download = 'Rencana_Pembelajaran_RPM.doc';
-        fileDownload.click();
-        document.body.removeChild(fileDownload);
-    }
-</script>
-
-</body>
-</html>
+            <h2 class="text-lg font-semibold text-emerald-800 mb-4">B. Identitas Penanggung Jawab</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Nama Guru <span class="text-red-500">*</span></label>
+                    <input type="text" id="namaGuru" required class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">NIP Guru <span class="text-red-500">*</span></label>
+                    <input type="text" id="nipGuru" required class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Nama Kepala Sekolah <span class="text-red-500">*</span></label>
+                    <input type="text" id="namaKepsek" required class="w-full p-2 border border-gold rounded focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">NIP Kepala Sekolah <span class="text-red-5
